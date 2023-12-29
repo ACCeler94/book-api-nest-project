@@ -31,7 +31,7 @@ export class AuthorsService {
     authorData: Omit<Author, 'id'>,
   ): Promise<Author> {
     try {
-      return this.prismaService.author.update({
+      return await this.prismaService.author.update({
         where: { id },
         data: authorData,
       });
