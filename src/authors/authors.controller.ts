@@ -8,10 +8,12 @@ import {
   ParseUUIDPipe,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { AuthorsService } from './authors.service';
 import { CreateAuthorDTO } from './dtos/create-author.dto';
 import { UpdateAuthorDTO } from './dtos/update-author.dto';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('authors')
 export class AuthorsController {
@@ -32,11 +34,13 @@ export class AuthorsController {
   }
 
   @Post('/')
+  @UseGuards(JwtAuthGuard)
   create(@Body() authorData: CreateAuthorDTO) {
     return this.authorsService.createAuthor(authorData);
   }
 
   @Put('/:id')
+  @UseGuards(JwtAuthGuard)
   async update(
     @Param('id', new ParseUUIDPipe()) id: 'string',
     @Body() authorData: UpdateAuthorDTO,
@@ -50,6 +54,7 @@ export class AuthorsController {
   }
 
   @Delete('/:id')
+  @UseGuards(JwtAuthGuard)
   async deleteById(
     @Param('id', new ParseUUIDPipe()) id: 'string',
   ): Promise<any> {
