@@ -8,6 +8,7 @@ import {
   ParseUUIDPipe,
   Post,
   Put,
+  Request,
   UseGuards,
 } from '@nestjs/common';
 import { BooksService } from './books.service';
@@ -37,6 +38,19 @@ export class BooksController {
   @UseGuards(JwtAuthGuard)
   async createBook(@Body() bookData: CreateBookDTO) {
     return this.booksService.createBook(bookData);
+  }
+
+  @Post('/like')
+  @UseGuards(JwtAuthGuard)
+  async addToFav(
+    @Body('bookId', new ParseUUIDPipe()) bookId: string,
+    @Request() req,
+  ) {
+    const userId = req.user.id; // take userId from the request since the user needs to be logged in anyway and data will be valid
+    const book = await this.booksService.getById(bookId);
+    if (!book) throw new NotFoundException('Book not found.');
+    await this.booksService.addToFav(bookId, userId);
+    return { success: true };
   }
 
   @Put('/:id')

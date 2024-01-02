@@ -7,7 +7,15 @@ export class UsersService {
   constructor(private prismaService: PrismaService) {}
 
   public getAllUsers(): Promise<User[]> {
-    return this.prismaService.user.findMany();
+    return this.prismaService.user.findMany({
+      include: {
+        books: {
+          include: {
+            book: true,
+          },
+        },
+      },
+    });
   }
 
   public getUserById(id: User['id']): Promise<User> {

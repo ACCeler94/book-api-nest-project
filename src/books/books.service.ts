@@ -72,4 +72,19 @@ export class BooksService {
       where: { id },
     });
   }
+
+  public async addToFav(bookId: Book['id'], userId: string) {
+    return await this.prismaService.book.update({
+      where: { id: bookId },
+      data: {
+        users: {
+          create: {
+            user: {
+              connect: { id: userId },
+            },
+          },
+        },
+      },
+    });
+  }
 }
